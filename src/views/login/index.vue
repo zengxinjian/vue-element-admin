@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-      <h3 class="title">vue-admin-template</h3>
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left" @keyup.enter.native="handleLogin">
+      <h3 class="title">{{ title }}后台登录</h3>
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -17,38 +17,38 @@
           v-model="loginForm.password"
           name="password"
           auto-complete="on"
-          placeholder="password"
-          @keyup.enter.native="handleLogin" />
+          placeholder="password" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon icon-class="eye" />
         </span>
       </el-form-item>
+
+      <el-form-item prop="smscode">
+        <span class="svg-container">
+          <svg-icon icon-class="" />
+        </span>
+        <el-input
+          v-model="loginForm.smscode"
+          name="smscode"
+          auto-complete="on"
+          placeholder="smscode" />
+      </el-form-item>
+
       <el-form-item>
         <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
           Sign in
         </el-button>
       </el-form-item>
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: admin</span>
-      </div>
     </el-form>
   </div>
 </template>
 
 <script>
-import { isvalidUsername } from '@/utils/validate'
+import config from '@/config'
 
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!isvalidUsername(value)) {
-        callback(new Error('请输入正确的用户名'))
-      } else {
-        callback()
-      }
-    }
     const validatePass = (rule, value, callback) => {
       if (value.length < 5) {
         callback(new Error('密码不能小于5位'))
@@ -57,13 +57,16 @@ export default {
       }
     }
     return {
+      title: config.title,
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: 'zxj',
+        password: '12345678',
+        smscode: '776168'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePass }]
+        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+        password: [{ required: true, trigger: 'blur', validator: validatePass }],
+        smscode: [{ required: true, message: '请输入验证码', triggter: 'blur' }]
       },
       loading: false,
       pwdType: 'password',

@@ -1,9 +1,14 @@
 import { login, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { removeToken } from '@/utils/auth'
 
 const user = {
   state: {
-    token: getToken(),
+    token: '',
+    signining: false,
+    menus: [],
+    authorities: [],
+    info: {},
+
     name: '',
     avatar: '',
     roles: []
@@ -28,15 +33,25 @@ const user = {
     // 登录
     Login({ commit }, userInfo) {
       const username = userInfo.username.trim()
-      return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(response => {
-          const data = response.data
-          setToken(data.token)
-          commit('SET_TOKEN', data.token)
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+      return login(username, userInfo.password, userInfo.smscode).then(res => {
+        const info = {
+          username: res.username || username,
+          created: res.created,
+          fullname: res.fullname || username,
+          email: res.email,
+          mobile: res.mobile,
+          status: res.status
+        }
+        this.store.set('token', res['access_token'])
+        this.store.set('menus', res.menus)
+        this.store.set('authorities', res.authorities)
+        this.store.set('info', info)
+        return {
+          token: res['access_token'],
+          menus: res.menus,
+          authorities: res.authorities,
+          info
+        }
       })
     },
 

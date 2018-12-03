@@ -1,13 +1,23 @@
+import http from '@/http'
 import request from '@/utils/request'
+import md5 from 'js-md5'
 
-export function login(username, password) {
-  return request({
-    url: '/user/login',
-    method: 'post',
-    data: {
-      username,
-      password
-    }
+// export function login(username, password, validateCode) {
+//   return request({
+//     url: '/api/v1/manage/login',
+//     method: 'post',
+//     data: {
+//       username,
+//       password: md5(password),
+//       validateCode
+//     }
+//   })
+// }
+export function login(username, password, validateCode) {
+  return http.post('/v1/manage/login', {
+    username,
+    password: md5(password),
+    validateCode
   })
 }
 
