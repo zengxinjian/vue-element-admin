@@ -1,4 +1,5 @@
 import { login, logout, getInfo } from '@/api/login'
+import Store from 'si-store'
 import { removeToken } from '@/utils/auth'
 
 const user = {
@@ -12,6 +13,16 @@ const user = {
     name: '',
     avatar: '',
     roles: []
+  },
+  constructor() {
+    this.store = Store.create({
+      id: 'app',
+      storage: 'session'
+    })
+    this.state.token = this.store.get('token') || ''
+    this.state.menus = this.store.get('menus') || []
+    this.state.authorities = this.store.get('authorities') || []
+    this.state.info = this.store.get('info') || {}
   },
 
   mutations: {
